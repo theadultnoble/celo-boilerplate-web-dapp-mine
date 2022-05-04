@@ -4,7 +4,7 @@ import BigNumber from "bignumber.js";
 import marketplaceAbi from "../contract/marketplace.abi.json";
 
 const ERC20_DECIMALS = 18;
-const MPContractAddress = "0xafD4c209B8270A009c63F70fE508aF77c20D4142";
+const MPContractAddress = "0xd49C3594f916D7142E3eD80B31336D92D2d5DEBD";
 
 let kit;
 let contract;
