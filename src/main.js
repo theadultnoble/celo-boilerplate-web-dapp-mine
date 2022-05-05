@@ -6,7 +6,7 @@ import marketplaceAbi from "../contract/marketplace.abi.json";
 console.log(MPContractAddress);
 
 const ERC20_DECIMALS = 18;
-const MPContractAddress = "0x52d757Eb62dd9E511b8381b25073048E4c775Ef4";
+const MPContractAddress = "0xBCC238a692b0D7f4e80B69B01ADd4e91e8F06821";
 
 let kit;
 let contract;
