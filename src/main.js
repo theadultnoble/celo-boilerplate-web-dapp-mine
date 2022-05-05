@@ -3,8 +3,10 @@ import { newKitFromWeb3 } from "@celo/contractkit";
 import BigNumber from "bignumber.js";
 import marketplaceAbi from "../contract/marketplace.abi.json";
 
+console.log(MPContractAddress);
+
 const ERC20_DECIMALS = 18;
-const MPContractAddress = "0xd49C3594f916D7142E3eD80B31336D92D2d5DEBD";
+const MPContractAddress = "0x52d757Eb62dd9E511b8381b25073048E4c775Ef4";
 
 let kit;
 let contract;
@@ -58,6 +60,7 @@ const getProducts = async function () {
     _products.push(_product);
   }
   products = await Promise.all(_products);
+  cosole.log(products);
   renderProducts();
 };
 
