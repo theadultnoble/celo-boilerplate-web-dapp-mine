@@ -2,11 +2,11 @@ import Web3 from "web3";
 import { newKitFromWeb3 } from "@celo/contractkit";
 import BigNumber from "bignumber.js";
 import marketplaceAbi from "../contract/marketplace.abi.json";
-
-console.log(MPContractAddress);
+import erc20Abi from "../contract/erc20.abi.json";
 
 const ERC20_DECIMALS = 18;
 const MPContractAddress = "0xBCC238a692b0D7f4e80B69B01ADd4e91e8F06821";
+const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1";
 
 let kit;
 let contract;
@@ -32,6 +32,14 @@ const connectCeloWallet = async function () {
     notification("⚠️ Please install the CeloExtensionWallet.");
   }
 };
+
+async function approve(_price) {
+  const cUSDContract = new kit.web3.eth.Contract(erc20Abi, cUSDContractAddress);
+  const result = await cUSDContract.methods
+    .approve(MPContractAddress, _price)
+    .send({ from: kit.defaultAccount });
+  return result;
+}
 
 const getBalance = async function () {
   const totalBalance = await kit.getTotalBalance(kit.defaultAccount);
@@ -60,7 +68,6 @@ const getProducts = async function () {
     _products.push(_product);
   }
   products = await Promise.all(_products);
-  cosole.log(products);
   renderProducts();
 };
 
@@ -165,11 +172,25 @@ document
     getProducts();
   });
 
-document.querySelector("#marketplace").addEventListener("click", (e) => {
+document.querySelector("#marketplace").addEventListener("click", async (e) => {
   if (e.target.className.includes("buyBtn")) {
     const index = e.target.id;
-    products[index].sold++;
-    notification(`🎉 You successfully bought "${products[index].name}".`);
-    renderProducts();
+    notification("⌛ Waiting for payment approval...");
+    try {
+      await approve(products[index].price);
+    } catch (error) {
+      notification(`⚠️ ${error}.`);
+    }
+    notification(`⌛ Awaiting payment for "${products[index].name}"...`);
+    try {
+      const result = await contract.methods
+        .buyProduct(index)
+        .send({ from: kit.defaultAccount });
+      notification(`🎉 You successfully bought "${products[index].name}".`);
+      getProducts();
+      getBalance();
+    } catch (error) {
+      notification(`⚠️ ${error}.`);
+    }
   }
 });
